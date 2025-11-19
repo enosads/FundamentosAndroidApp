@@ -1,5 +1,6 @@
 package dev.enosads.fundamentosandroidapp
 
+import androidx.annotation.DrawableRes
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -8,7 +9,9 @@ import kotlinx.coroutines.flow.update
 import kotlin.random.Random
 
 data class DiceUiState(
-    val rolledDiceValue: Int? = null,
+    @DrawableRes val rolledDice1ImageRes: Int? = null,
+    @DrawableRes val rolledDice2ImageRes: Int? = null,
+    @DrawableRes val rolledDice3ImageRes: Int? = null,
     val numberOfRolls: Int = 0
 )
 
@@ -20,10 +23,23 @@ class DiceViewModel: ViewModel()     {
     fun rollDice() {
         _uiState.update { currentState ->
             currentState.copy(
-                rolledDiceValue = Random.nextInt(from = 1, until = 7),
+                rolledDice1ImageRes = getDiceImageResource(Random.nextInt(1, 7)),
+                rolledDice2ImageRes = getDiceImageResource(Random.nextInt(1, 7)),
+                rolledDice3ImageRes = getDiceImageResource(Random.nextInt(1, 7)),
                 numberOfRolls = currentState.numberOfRolls + 1
             )
         }
     }
 
+    private fun getDiceImageResource(diceValue: Int): Int {
+        return when (diceValue) {
+            1 -> R.drawable.ic_dice_one
+            2 -> R.drawable.ic_dice_two
+            3 -> R.drawable.ic_dice_three
+            4 -> R.drawable.ic_dice_four
+            5 -> R.drawable.ic_dice_five
+            6 -> R.drawable.ic_dice_six
+            else -> R.drawable.ic_dice_unknown
+        }
+    }
 }
