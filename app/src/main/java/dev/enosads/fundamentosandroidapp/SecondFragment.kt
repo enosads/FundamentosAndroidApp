@@ -34,10 +34,14 @@ class SecondFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val firstArgument = arguments?.getStringArray("first_arg") ?: arrayOf()
 
-        lifecycleScope.launch {
-            viewModel.uiState.collect { uiState ->
-                uiState.rolledDice3ImageRes?.let { imgRes -> binding.ivRolledDice3.setImageResource(imgRes) }
-            }
+//        lifecycleScope.launch {
+//            viewModel.uiState.collect { uiState ->
+//                uiState.rolledDice3ImageRes?.let { imgRes -> binding.ivRolledDice3.setImageResource(imgRes) }
+//            }
+//        }
+
+        viewModel.uiStateLiveData.observe(viewLifecycleOwner) { uiState ->
+            uiState.rolledDice3ImageRes?.let { imgRes -> binding.ivRolledDice3.setImageResource(imgRes) }
         }
 
         Log.d("SecondFragment", "Argument: ${firstArgument.joinToString() }")

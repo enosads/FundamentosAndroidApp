@@ -7,31 +7,41 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import dev.enosads.fundamentosandroidapp.databinding.ActivityMainBinding
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private  val navController by lazy {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fcvMainContainer) as? NavHostFragment
+    private val viewModel: DiceViewModel by viewModels()
+
+    private val navController by lazy {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fcvMainContainer) as? NavHostFragment
         navHostFragment?.navController
     }
-    override fun onCreate(savedInstanceState: Bundle?) {
 
-        val viewModel: DiceViewModel by viewModels()
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    uiState.rolledDice1ImageRes?.let { imgRes -> binding.ivRolledDice1.setImageResource(imgRes) }
-                }
+    override fun onResume() {
+        super.onResume()
+        viewModel.uiStateLiveData.observe(this@MainActivity) { uiState ->
+            uiState.rolledDice1ImageRes?.let { imgRes ->
+                binding.ivRolledDice1.setImageResource(
+                    imgRes
+                )
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                viewModel.uiState.collect { uiState ->
+//                    uiState.rolledDice1ImageRes?.let { imgRes -> binding.ivRolledDice1.setImageResource(imgRes) }
+//                }
+//            }
+//        }
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -47,17 +57,26 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnNextFragment.setOnClickListener {
             navController?.currentDestination?.id.let {
-                when(it){
+                when (it) {
                     R.id.firstFragment -> {
-                        navController?.navigate(R.id.action_firstFragment_to_secondFragment, bundleOf(
-                            "first_arg" to arrayOf("1", "2", "3")
-                        ))
+                        navController?.navigate(
+                            R.id.action_firstFragment_to_secondFragment,
+                            bundleOf("firstArg" to arrayOf("1", "2", "3"))
+                        )
+                        binding.btnNextFragment.text =
+                            getString(R.string.ir_para_a_lista_de_jogadas)
+                    }
+
+                    R.id.secondFragment -> {
+                        navController?.navigate(R.id.action_secondFragment_to_thirdFragment)
                         binding.btnNextFragment.text =
                             getString(R.string.voltar_para_o_primeiro_fragment)
                     }
-                    R.id.secondFragment -> {
-                        navController?.popBackStack()
-                        binding.btnNextFragment.text = getString(R.string.ir_para_proxima_tela)
+
+                    R.id.thirdFragment -> {
+                        navController?.navigate(R.id.action_thirdFragment_to_firstFragment)
+                        binding.btnNextFragment.text =
+                            getString(R.string.ir_para_proxima_tela)
                     }
                 }
             }

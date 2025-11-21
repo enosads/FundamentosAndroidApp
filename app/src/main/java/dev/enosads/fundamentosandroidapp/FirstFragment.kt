@@ -32,10 +32,14 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launch {
-            viewModel.uiState.collect { uiState ->
-               uiState.rolledDice2ImageRes?.let { imgRes -> binding.ivRolledDice2.setImageResource(imgRes) }
-            }
+//        lifecycleScope.launch {
+//            viewModel.uiState.collect { uiState ->
+//               uiState.rolledDice2ImageRes?.let { imgRes -> binding.ivRolledDice2.setImageResource(imgRes) }
+//            }
+//        }
+
+        viewModel.uiStateLiveData.observe(viewLifecycleOwner) { uiState ->
+            uiState.rolledDice2ImageRes?.let { imgRes -> binding.ivRolledDice2.setImageResource(imgRes) }
         }
 
 

@@ -1,45 +1,70 @@
 package dev.enosads.fundamentosandroidapp
 
 import androidx.annotation.DrawableRes
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 data class DiceUiState(
     @DrawableRes val rolledDice1ImageRes: Int? = null,
     @DrawableRes val rolledDice2ImageRes: Int? = null,
     @DrawableRes val rolledDice3ImageRes: Int? = null,
-    val numberOfRolls: Int = 0
+    val numberOfRolls: Int = 0,
+    val rolledDicesList: List<RolledDices> = emptyList()
 )
 
-class DiceViewModel: ViewModel()     {
+class DiceViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(DiceUiState())
     val uiState: StateFlow<DiceUiState> = _uiState.asStateFlow()
 
+    private val _uiStateLiveData = MutableLiveData(DiceUiState())
+    val uiStateLiveData: LiveData<DiceUiState> = _uiStateLiveData
+
 
     fun rollDice() {
+        val valueDice1 = Random.nextInt(1, 7)
+        val valueDice2 = Random.nextInt(1, 7)
+        val valueDice3 = Random.nextInt(1, 7)
+
+        val rolledDices = RolledDices(valueDice1, valueDice2, valueDice3)
+
         _uiState.update { currentState ->
+            val currentRolledDicesList = currentState.rolledDicesList.toMutableList()
+            currentRolledDicesList.add(rolledDices)
+            val updatedRolledDicesList = currentRolledDicesList.toList()
+
             currentState.copy(
-                rolledDice1ImageRes = getDiceImageResource(Random.nextInt(1, 7)),
-                rolledDice2ImageRes = getDiceImageResource(Random.nextInt(1, 7)),
-                rolledDice3ImageRes = getDiceImageResource(Random.nextInt(1, 7)),
+                rolledDice1ImageRes = getDiceImageResource(valueDice1),
+                rolledDice2ImageRes = getDiceImageResource(valueDice2),
+                rolledDice3ImageRes = getDiceImageResource(valueDice3),
+                rolledDicesList = updatedRolledDicesList,
                 numberOfRolls = currentState.numberOfRolls + 1
             )
         }
-    }
 
-    private fun getDiceImageResource(diceValue: Int): Int {
-        return when (diceValue) {
-            1 -> R.drawable.ic_dice_one
-            2 -> R.drawable.ic_dice_two
-            3 -> R.drawable.ic_dice_three
-            4 -> R.drawable.ic_dice_four
-            5 -> R.drawable.ic_dice_five
-            6 -> R.drawable.ic_dice_six
-            else -> R.drawable.ic_dice_unknown
+        CoroutineScope(Dispatchers.IO).launch {
+            val currentRolledDicesList =
+                _uiStateLiveData.value?.rolledDicesList?.toMutableList().orEmpty().toMutableList()
+            currentRolledDicesList.add(rolledDices)
+            val updatedRolledDicesList = currentRolledDicesList.toList()
+
+            _uiStateLiveData.postValue(
+                DiceUiState(
+                    rolledDice1ImageRes = getDiceImageResource(valueDice1),
+                    rolledDice2ImageRes = getDiceImageResource(valueDice2),
+                    rolledDice3ImageRes = getDiceImageResource(valueDice3),
+                    rolledDicesList = updatedRolledDicesList,
+                    numberOfRolls = (_uiStateLiveData.value?.numberOfRolls ?: 0) + 1
+                )
+            )
         }
     }
 }
