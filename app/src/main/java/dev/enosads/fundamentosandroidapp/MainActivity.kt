@@ -63,7 +63,18 @@ class MainActivity : AppCompatActivity() {
 //                ).setNegativeButton("Não") { _, _ ->
 //
 //                }.setCancelable(false).create().show()
-            ConfirmDialogFragment().show(supportFragmentManager, "confirm_dialog_fragment")
+//            ConfirmDialogFragment {
+//                viewModel.rollDice()
+//            }.show(
+//                supportFragmentManager,
+//                "confirm_dialog_fragment"
+//            )
+            ConfirmBottomSheetDialogFragment {
+                viewModel.rollDice()
+            }.show(
+                supportFragmentManager,
+                "confirm_dialog_fragment"
+            )
         }
 
         binding.btnNextFragment.setOnClickListener {

@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dev.enosads.fundamentosandroidapp.databinding.DialogFragmentConfirmBinding
 
-class ConfirmDialogFragment(val onConfirm: () -> Unit) : DialogFragment() {
+class ConfirmBottomSheetDialogFragment(val onConfirm: () -> Unit) :
+    BottomSheetDialogFragment() {
     private var _binding: DialogFragmentConfirmBinding? = null
     private val binding get() = _binding!!
 
