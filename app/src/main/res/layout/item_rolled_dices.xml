@@ -42,8 +42,8 @@
 
         <ImageView
             android:id="@+id/ivRolledDice1"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/icone_de_um_dado"
             android:src="@drawable/ic_dice_unknown" />
 
@@ -67,8 +67,8 @@
 
         <ImageView
             android:id="@+id/ivRolledDice2"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/icone_de_um_dado"
             android:src="@drawable/ic_dice_unknown" />
 
@@ -92,8 +92,8 @@
 
         <ImageView
             android:id="@+id/ivRolledDice3"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/icone_de_um_dado"
             android:src="@drawable/ic_dice_unknown" />
 
