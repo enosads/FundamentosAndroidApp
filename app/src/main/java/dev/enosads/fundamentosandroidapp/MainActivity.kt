@@ -3,7 +3,9 @@ package dev.enosads.fundamentosandroidapp
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -53,7 +55,17 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        binding.btnRollDice.setOnClickListener { viewModel.rollDice() }
+        binding.btnRollDice.setOnClickListener {
+            AlertDialog.Builder(this@MainActivity).setTitle("Rodar os dados")
+                .setMessage("Deseja realmente jogar os dados?")
+                .setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton("Sim") { _, _ ->
+                    viewModel.rollDice()
+                }.setPositiveButtonIcon(
+                    AppCompatResources.getDrawable(this@MainActivity, R.drawable.ic_dice_unknown),
+                ).setNegativeButton("Não") { _, _ ->
+
+                }.setCancelable(false).create().show()
+        }
 
         binding.btnNextFragment.setOnClickListener {
             navController?.currentDestination?.id.let {
