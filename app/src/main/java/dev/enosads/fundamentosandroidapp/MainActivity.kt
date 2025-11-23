@@ -3,6 +3,7 @@ package dev.enosads.fundamentosandroidapp
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -105,6 +106,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnNextFragment.setOnClickListener {
+            val customAnim =
+                AnimationUtils.loadAnimation(this@MainActivity, R.anim.custom_anim)
+            binding.btnNextFragment.startAnimation(customAnim)
             navController?.currentDestination?.id.let {
                 when (it) {
                     R.id.firstFragment -> {
