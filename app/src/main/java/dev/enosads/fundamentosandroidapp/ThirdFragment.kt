@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import dev.enosads.fundamentosandroidapp.databinding.FragmentThirdBinding
 import kotlinx.coroutines.launch
 
@@ -21,23 +23,23 @@ class ThirdFragment : Fragment() {
         _binding = null
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        lifecycleScope.launch {
-            viewModel.uiState.collect { uiState ->
-                uiState.rolledDice3ImageRes?.let { imgRes ->
-                    binding.rvRolledDices.adapter = RolledDicesAdapter(uiState.rolledDicesList)
-                }
-            }
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentThirdBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { uiState ->
+                    binding.rvRolledDices.adapter = RolledDicesAdapter(uiState.rolledDicesList)
+                }
+            }
+        }
     }
 }
